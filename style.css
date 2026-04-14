@@ -1,0 +1,98 @@
+body {
+    font-family: sans-serif;
+    background: #1a1a2e;
+    color: #fff;
+    text-align: center;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    max-width: 550px;
+    margin: auto;
+    background: #16213e;
+    border: 3px solid #0f3460;
+    gap: 2px;
+}
+
+.cell {
+    aspect-ratio: 1;
+    border: 1px solid #1a1a2e;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cell-num {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: 9px;
+    color: #4ecca3;
+}
+
+.board-icon {
+    width: 70%;
+    opacity: 0.5;
+    position: absolute;
+}
+
+.token {
+    position: absolute;
+    font-size: 24px;
+    z-index: 10;
+    border-radius: 50%;
+}
+
+.p1-token {
+    background: rgba(78, 204, 163, 0.4);
+    box-shadow: 0 0 10px #4ecca3;
+    left: 2px;
+}
+
+.p2-token {
+    background: rgba(233, 69, 96, 0.4);
+    box-shadow: 0 0 10px #e94560;
+    right: 2px;
+}
+
+.dice-face {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: #fff;
+    color: #000;
+    font-weight: bold;
+    border-radius: 8px;
+    animation: roll 0.6s ease-out;
+}
+
+@keyframes roll {
+    0% {
+        transform: rotate(0) scale(0.2)
+    }
+
+    100% {
+        transform: rotate(360deg) scale(1)
+    }
+}
+
+.roll-btn {
+    padding: 15px 40px;
+    background: #4ecca3;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.diff-select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background: #16213e;
+    color: #4ecca3;
+    border: 2px solid #4ecca3;
+}
