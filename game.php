@@ -174,14 +174,21 @@ $lastEvent = $_SESSION['last_event'] ?? 'Welcome!';
             playTone(180 + (stepNumber * 18), 0.05, 'triangle', 0.02, 0);
         }
 
-        function playEffectSound(effect) {
+        function playEffectSound(effect, delayOffset = 0) {
             if (effect === 'ladder') {
-                [420, 560, 740].forEach((frequency, index) => playTone(frequency, 0.12, 'sine', 0.03, index * 0.07));
+                [420, 560, 740].forEach((frequency, index) => playTone(frequency, 0.12, 'sine', 0.03, delayOffset + (index * 0.07)));
             } else if (effect === 'snake') {
-                [420, 280, 180].forEach((frequency, index) => playTone(frequency, 0.14, 'sawtooth', 0.025, index * 0.08));
+                [420, 280, 180].forEach((frequency, index) => playTone(frequency, 0.14, 'sawtooth', 0.025, delayOffset + (index * 0.08)));
             } else if (effect === 'win') {
-                [523, 659, 784, 1046].forEach((frequency, index) => playTone(frequency, 0.18, 'triangle', 0.04, index * 0.08));
+                [523, 659, 784, 1046].forEach((frequency, index) => playTone(frequency, 0.18, 'triangle', 0.04, delayOffset + (index * 0.08)));
+            } else if (effect === 'lose') {
+                [392, 311, 247, 196].forEach((frequency, index) => playTone(frequency, 0.22, 'sine', 0.03, delayOffset + (index * 0.12)));
             }
+        }
+
+        function playEndGameSounds() {
+            playEffectSound('win', 0);
+            playEffectSound('lose', 0.18);
         }
 
         function createToken(playerIndex) {
@@ -244,7 +251,7 @@ $lastEvent = $_SESSION['last_event'] ?? 'Welcome!';
             }
 
             if (move.won) {
-                playEffectSound('win');
+                playEndGameSounds();
             }
         }
 
@@ -292,7 +299,7 @@ $lastEvent = $_SESSION['last_event'] ?? 'Welcome!';
 
                 if (data.winner) {
                     eventText.textContent = 'Player ' + data.winner + ' wins!';
-                    await wait(500);
+                    await wait(1300);
                     window.location.href = 'leaderboard.php?win=' + data.winner;
                     return;
                 }
