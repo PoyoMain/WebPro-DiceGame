@@ -18,6 +18,7 @@ function initializeGame($force = false)
         $_SESSION['log'] = ["Game started!"];
         $_SESSION['last_event'] = "Welcome!";
         $_SESSION['last_roll'] = null;
+        $_SESSION['last_move'] = null;
     }
 }
 
@@ -25,15 +26,45 @@ function handleRoll($playerIndex)
 {
     $layout = getBoardLayout($_SESSION['difficulty'] ?? 'beginner');
     $roll = rand(1, 6);
+    $start = $_SESSION['positions'][$playerIndex];
+    $steppedTo = min($start + $roll, 100);
+    $finalPosition = $steppedTo;
+    $effect = 'normal';
+
+    if ($steppedTo < 100) {
+        if (isset($layout['l'][$steppedTo])) {
+            $finalPosition = $layout['l'][$steppedTo];
+            $effect = 'ladder';
+        } elseif (isset($layout['s'][$steppedTo])) {
+            $finalPosition = $layout['s'][$steppedTo];
+            $effect = 'snake';
+        }
+    }
+
+    $won = ($finalPosition >= 100);
     $_SESSION['last_roll'] = $roll;
-    $newPos = $_SESSION['positions'][$playerIndex] + $roll;
-    if ($newPos >= 100)
-        return 100;
-    if (isset($layout['l'][$newPos]))
-        $newPos = $layout['l'][$newPos];
-    elseif (isset($layout['s'][$newPos]))
-        $newPos = $layout['s'][$newPos];
-    $_SESSION['last_event'] = "Player " . ($playerIndex + 1) . " rolled a $roll.";
-    return $newPos;
+
+    $eventMessage = "Player " . ($playerIndex + 1) . " rolled a $roll and moved from $start to $steppedTo.";
+    if ($effect === 'ladder') {
+        $eventMessage .= " Ladder up to $finalPosition.";
+    } elseif ($effect === 'snake') {
+        $eventMessage .= " Snake down to $finalPosition.";
+    } elseif ($won) {
+        $eventMessage = "Player " . ($playerIndex + 1) . " rolled a $roll and reached 100.";
+    }
+
+    $_SESSION['last_event'] = $eventMessage;
+    $_SESSION['log'][] = $eventMessage;
+    $_SESSION['last_move'] = [
+        'player' => $playerIndex,
+        'roll' => $roll,
+        'from' => $start,
+        'stepped_to' => $steppedTo,
+        'to' => $finalPosition,
+        'effect' => $effect,
+        'won' => $won,
+    ];
+
+    return $_SESSION['last_move'];
 }
 ?>
